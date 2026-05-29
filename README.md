@@ -37,7 +37,7 @@ Displave is a macOS menu bar app that saves and applies window layouts instantly
 
 1. **Install** — Open the DMG and drag Displave to Applications
 2. **Grant permission** — System Settings → Privacy & Security → Accessibility → enable Displave
-3. **Save a layout** — Arrange your windows, then click the menu bar icon → **Save Current Layout** (or `⌘⇧S`)
+3. **Save a layout** — Arrange your windows, then click the menu bar icon → **Save Layout** (or `⌘⇧S`)
 4. **Apply a layout** — Click the menu bar icon → hover over a saved layout → **Apply**
 5. **Delete a layout** — Hover over a layout → **Delete**
 
