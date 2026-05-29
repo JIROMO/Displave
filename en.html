@@ -129,8 +129,8 @@
     footer { border-top: 1px solid var(--border); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     footer p { font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
     .footer-links { display: flex; gap: 20px; }
-    .footer-links a { font-size: 12px; color: var(--fg-subtle); text-decoration: none; letter-spacing: -0.01em; transition: color 0.15s; }
-    .footer-links a:hover { color: var(--fg); }
+    .footer-links a { font-size: 12px; color: var(--fg-subtle); text-decoration: none !important; letter-spacing: -0.01em; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--fg); text-decoration: none !important; }
 
     @media (max-width: 600px) {
       nav { padding: 0 20px; }
