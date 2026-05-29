@@ -12,14 +12,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #ffffff;
-      --fg: #1a1a1a;
-      --fg-muted: #6b6b6b;
-      --fg-subtle: #a0a0a0;
-      --border: #e8e8e8;
-      --surface: #f7f7f7;
-      --radius: 16px;
-      --radius-sm: 10px;
+      --bg: #0f0f0f;
+      --bg-2: #181818;
+      --bg-3: #222222;
+      --fg: #f0f0f0;
+      --fg-muted: #888;
+      --fg-subtle: #555;
+      --border: #2a2a2a;
+      --radius: 14px;
+      --radius-sm: 8px;
     }
 
     html { scroll-behavior: smooth; }
@@ -40,270 +41,92 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 40px;
-      height: 60px;
-      background: rgba(255,255,255,0.85);
+      height: 56px;
+      background: rgba(15,15,15,0.85);
       backdrop-filter: saturate(180%) blur(20px);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       border-bottom: 1px solid var(--border);
     }
 
-    .nav-logo img { height: 18px; display: block; }
-
+    .nav-logo img { height: 18px; display: block; filter: invert(1); }
     .nav-center { display: flex; gap: 28px; list-style: none; }
-
-    .nav-center a {
-      font-size: 14px;
-      color: var(--fg-muted);
-      text-decoration: none;
-      letter-spacing: -0.01em;
-      transition: color 0.15s;
-    }
-
+    .nav-center a { font-size: 14px; color: var(--fg-muted); text-decoration: none; letter-spacing: -0.01em; transition: color 0.15s; }
     .nav-center a:hover { color: var(--fg); }
-
     .nav-right { display: flex; align-items: center; gap: 12px; }
-
-    .lang-link {
-      font-size: 13px;
-      color: var(--fg-subtle);
-      text-decoration: none;
-      letter-spacing: 0.02em;
-      transition: color 0.15s;
-    }
-
+    .lang-link { font-size: 13px; color: var(--fg-subtle); text-decoration: none; transition: color 0.15s; }
     .lang-link:hover { color: var(--fg); }
+    .btn-nav { font-size: 13px; font-weight: 500; color: #0f0f0f; background: var(--fg); padding: 7px 16px; border-radius: 100px; text-decoration: none; transition: opacity 0.15s; }
+    .btn-nav:hover { opacity: 0.8; }
 
-    .btn-nav {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--bg);
-      background: var(--fg);
-      padding: 7px 16px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
-
-    .btn-nav:hover { opacity: 0.75; }
-
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 112px 24px 88px;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-
-    .hero-badge {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      margin-bottom: 24px;
-    }
+    .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 120px 24px 96px; max-width: 720px; margin: 0 auto; }
 
     .hero h1 {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-size: clamp(38px, 7vw, 64px);
+      font-size: clamp(40px, 7vw, 68px);
       font-weight: 700;
       letter-spacing: -0.04em;
       line-height: 1.08;
       margin-bottom: 24px;
-    }
-
-    .hero p {
-      font-size: 18px;
-      color: var(--fg-muted);
-      max-width: 500px;
-      letter-spacing: -0.01em;
-      line-height: 1.6;
-      margin-bottom: 44px;
-    }
-
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-
-    .btn-primary {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--bg);
-      background: var(--fg);
-      padding: 13px 28px;
-      border-radius: 100px;
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      transition: opacity 0.15s;
-    }
-
-    .btn-primary:hover { opacity: 0.75; }
-
-    .btn-secondary {
-      font-size: 15px;
-      font-weight: 500;
       color: var(--fg);
-      border: 1.5px solid var(--border);
-      padding: 13px 28px;
-      border-radius: 100px;
-      text-decoration: none;
-      letter-spacing: -0.02em;
-      transition: border-color 0.15s;
     }
 
-    .btn-secondary:hover { border-color: #aaa; }
+    .hero p { font-size: 18px; color: var(--fg-muted); max-width: 480px; letter-spacing: -0.01em; line-height: 1.6; margin-bottom: 44px; }
+    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
-    .hero-meta { margin-top: 18px; font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
+    .btn-primary { font-size: 14px; font-weight: 600; color: #0f0f0f; background: var(--fg); padding: 11px 24px; border-radius: 100px; text-decoration: none; letter-spacing: -0.01em; transition: opacity 0.15s; }
+    .btn-primary:hover { opacity: 0.8; }
+    .btn-secondary { font-size: 14px; font-weight: 500; color: var(--fg-muted); border: 1px solid var(--border); padding: 11px 24px; border-radius: 100px; text-decoration: none; letter-spacing: -0.01em; transition: border-color 0.15s, color 0.15s; }
+    .btn-secondary:hover { border-color: #555; color: var(--fg); }
+    .hero-meta { margin-top: 20px; font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
 
-    .icon-wrap { display: flex; justify-content: center; padding: 0 24px 80px; }
+    .icon-wrap { display: flex; justify-content: center; padding: 0 24px 88px; }
+    .app-icon { width: 128px; height: 128px; background: #1a1a1a; border-radius: 28px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    .app-icon svg { width: 80px; height: 80px; }
 
-    .app-icon {
-      width: 140px;
-      height: 140px;
-      background: #1a1a1a;
-      border-radius: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.16), 0 6px 20px rgba(0,0,0,0.08);
-    }
-
-    .app-icon svg { width: 88px; height: 88px; }
-
-    .section { padding: 80px 24px; max-width: 960px; margin: 0 auto; }
-
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.09em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      margin-bottom: 14px;
-    }
-
-    .section-title {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-size: clamp(26px, 4vw, 38px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 48px;
-    }
-
+    .section { padding: 72px 24px; max-width: 960px; margin: 0 auto; }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-subtle); margin-bottom: 12px; }
+    .section-title { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif; font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 40px; color: var(--fg); }
     .centered { text-align: center; }
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2px;
-      background: var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .feature-card { background: var(--bg-2); padding: 28px 24px; }
+    .feature-icon { width: 32px; height: 32px; background: var(--bg-3); border-radius: 7px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 16px; }
+    .feature-card h3 { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--fg); }
+    .feature-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.65; }
 
-    .feature-card { background: var(--bg); padding: 32px 28px; }
-
-    .feature-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--surface);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      font-size: 18px;
-    }
-
-    .feature-card h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .feature-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.65; letter-spacing: -0.01em; }
-
-    .usage-section { background: var(--surface); padding: 80px 24px; }
-    .usage-inner { max-width: 800px; margin: 0 auto; }
-
-    .steps { display: flex; flex-direction: column; margin-top: 48px; }
-
-    .step {
-      display: grid;
-      grid-template-columns: 40px 1fr;
-      gap: 20px;
-      padding: 28px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
+    .usage-section { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 72px 24px; }
+    .usage-inner { max-width: 760px; margin: 0 auto; }
+    .steps { display: flex; flex-direction: column; margin-top: 40px; }
+    .step { display: grid; grid-template-columns: 36px 1fr; gap: 16px; padding: 24px 0; border-bottom: 1px solid var(--border); }
     .step:last-child { border-bottom: none; }
+    .step-num { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; color: var(--fg-subtle); padding-top: 3px; }
+    .step-body h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--fg); }
+    .step-body p { font-size: 13px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.65; }
 
-    .step-num { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; color: var(--fg-subtle); padding-top: 3px; }
+    kbd { font-family: -apple-system, "SF Mono", "Menlo", monospace; font-size: 11px; background: var(--bg-3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; color: var(--fg); }
 
-    .step-body h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .step-body p { font-size: 14px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.65; }
+    .tip { display: flex; gap: 10px; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 10px; font-size: 12px; color: var(--fg-muted); line-height: 1.6; }
+    .tip-icon { flex-shrink: 0; }
 
-    kbd {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", monospace;
-      font-size: 12px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 2px 7px;
-      color: var(--fg);
-      box-shadow: 0 1px 0 var(--border);
-    }
-
-    .tip {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      background: var(--bg);
-      border: 1.5px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 16px 18px;
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--fg-muted);
-      letter-spacing: -0.01em;
-      line-height: 1.6;
-    }
-
-    .tip-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-
-    .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
-
-    .perm-card { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 20px; }
-    .perm-card h4 { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
-    .perm-card p { font-size: 13px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.55; }
+    .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 10px; }
+    .perm-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; background: var(--bg-3); }
+    .perm-card h4 { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; color: var(--fg); }
+    .perm-card p { font-size: 12px; color: var(--fg-muted); line-height: 1.55; }
 
     .faq-list { display: flex; flex-direction: column; margin-top: 40px; border-top: 1px solid var(--border); }
+    .faq-item { padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .faq-item h4 { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--fg); }
+    .faq-item p { font-size: 13px; color: var(--fg-muted); line-height: 1.65; }
 
-    .faq-item { padding: 24px 0; border-bottom: 1px solid var(--border); }
-    .faq-item h4 { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
-    .faq-item p { font-size: 14px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.65; }
-
-    .req-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-    .req-tag { font-size: 13px; color: var(--fg-muted); background: var(--surface); padding: 5px 12px; border-radius: 100px; }
+    .req-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .req-tag { font-size: 12px; color: var(--fg-muted); background: var(--bg-3); border: 1px solid var(--border); padding: 4px 12px; border-radius: 100px; }
 
     .cta-section { padding: 96px 24px; text-align: center; border-top: 1px solid var(--border); }
+    .cta-section h2 { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif; font-size: clamp(24px, 4vw, 40px); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; color: var(--fg); }
+    .cta-section p { font-size: 15px; color: var(--fg-muted); margin-bottom: 32px; }
+    .cta-meta { margin-top: 12px; font-size: 12px; color: var(--fg-subtle); }
 
-    .cta-section h2 {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-size: clamp(26px, 4vw, 42px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 14px;
-    }
-
-    .cta-section p { font-size: 16px; color: var(--fg-muted); margin-bottom: 36px; letter-spacing: -0.01em; }
-    .cta-meta { margin-top: 14px; font-size: 12px; color: var(--fg-subtle); }
-
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
+    footer { border-top: 1px solid var(--border); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     footer p { font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
     .footer-links { display: flex; gap: 20px; }
     .footer-links a { font-size: 12px; color: var(--fg-subtle); text-decoration: none; letter-spacing: -0.01em; transition: color 0.15s; }
@@ -327,7 +150,7 @@
     </ul>
     <div class="nav-right">
       <a class="lang-link" href="https://displave.com">日本語</a>
-      <a class="btn-nav" href="#download">Download</a>
+      <a class="btn-nav" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg">Download</a>
     </div>
   </nav>
 
@@ -353,38 +176,14 @@
 
   <section class="section" id="features">
     <p class="section-label centered">Features</p>
-    <h2 class="section-title centered">Everything you need,<br>nothing you don't.</h2>
+    <h2 class="section-title centered">Everything you need.</h2>
     <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">⊞</div>
-        <h3>Save Any Layout</h3>
-        <p>Capture the position and size of every open window with a single click from the menu bar.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">↩</div>
-        <h3>Apply Instantly</h3>
-        <p>Select a saved layout and every window snaps back to exactly where you left it.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">◫</div>
-        <h3>Window Ordering</h3>
-        <p>Preserves the z-order of your windows — not just position and size, but the full stack.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⌘</div>
-        <h3>Keyboard Shortcut</h3>
-        <p>Press <kbd>⌘⇧S</kbd> to save the current layout without touching the mouse.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">◑</div>
-        <h3>Multi-Display</h3>
-        <p>Tracks which display each window belongs to so your layout is accurate across screens.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">↑</div>
-        <h3>Lives in the Menu Bar</h3>
-        <p>No dock icon. No distractions. Displave stays out of the way until you need it.</p>
-      </div>
+      <div class="feature-card"><div class="feature-icon">⊞</div><h3>Save Any Layout</h3><p>Capture position and size of every open window with a single click.</p></div>
+      <div class="feature-card"><div class="feature-icon">↩</div><h3>Apply Instantly</h3><p>Select a layout and every window snaps back to exactly where you left it.</p></div>
+      <div class="feature-card"><div class="feature-icon">◫</div><h3>Window Ordering</h3><p>Preserves z-order — not just position and size, but the full stack.</p></div>
+      <div class="feature-card"><div class="feature-icon">⌘</div><h3>Keyboard Shortcut</h3><p>Press <kbd>⌘⇧S</kbd> to save without touching the mouse.</p></div>
+      <div class="feature-card"><div class="feature-icon">◑</div><h3>Multi-Display</h3><p>Tracks which display each window belongs to for accurate restoration.</p></div>
+      <div class="feature-card"><div class="feature-icon">↑</div><h3>Menu Bar Only</h3><p>No dock icon. Displave stays out of the way until you need it.</p></div>
     </div>
   </section>
 
@@ -392,65 +191,46 @@
     <div class="usage-inner">
       <p class="section-label">Usage</p>
       <h2 class="section-title" style="margin-bottom:0">From start to finish.</h2>
-
       <div class="steps">
         <div class="step">
           <span class="step-num">01</span>
           <div class="step-body">
             <h3>Install</h3>
-            <p>Download the DMG, open it, and drag Displave to your Applications folder. Launch it — a Displave icon will appear in your menu bar.</p>
-            <div class="tip">
-              <span class="tip-icon">ℹ</span>
-              <span>On first launch, a dialog will ask you to grant Accessibility permission. Click "Open System Settings" and enable Displave in the list.</span>
-            </div>
+            <p>Download the DMG, open it, and drag Displave to Applications. A Displave icon will appear in your menu bar.</p>
+            <div class="tip"><span class="tip-icon">ℹ</span><span>On first launch, a dialog will ask you to grant Accessibility permission. Click "Open System Settings" and enable Displave.</span></div>
           </div>
         </div>
-
         <div class="step">
           <span class="step-num">02</span>
           <div class="step-body">
             <h3>Grant Accessibility Permission</h3>
             <p>Displave needs Accessibility permission to read and move window positions.</p>
             <div class="perm-grid">
-              <div class="perm-card">
-                <h4>How to enable</h4>
-                <p>System Settings → Privacy &amp; Security → Accessibility → toggle Displave on</p>
-              </div>
-              <div class="perm-card">
-                <h4>What is collected</h4>
-                <p>Only window position, size, and app name. No screen content or personal data is ever read.</p>
-              </div>
+              <div class="perm-card"><h4>How to enable</h4><p>System Settings → Privacy & Security → Accessibility → toggle Displave on</p></div>
+              <div class="perm-card"><h4>What is collected</h4><p>Only window position, size, and app name. No screen content or personal data.</p></div>
             </div>
           </div>
         </div>
-
         <div class="step">
           <span class="step-num">03</span>
           <div class="step-body">
             <h3>Save the current layout</h3>
-            <p>Arrange your windows the way you like, then click the Displave icon in the menu bar and choose <strong>Save Current Layout</strong>. You can also press <kbd>⌘⇧S</kbd>.</p>
-            <p style="margin-top:10px">Enter a name and save. Repeat for as many layouts as you need.</p>
-            <div class="tip">
-              <span class="tip-icon">💡</span>
-              <span>Use descriptive names like "Coding", "Meeting", or "Writing" so you can switch modes at a glance.</span>
-            </div>
+            <p>Arrange your windows, then click the Displave icon → <strong>Save Layout</strong>. Or press <kbd>⌘⇧S</kbd>.</p>
+            <div class="tip"><span class="tip-icon">💡</span><span>Use descriptive names like "Coding", "Meeting", or "Writing" for easy switching.</span></div>
           </div>
         </div>
-
         <div class="step">
           <span class="step-num">04</span>
           <div class="step-body">
             <h3>Apply a layout</h3>
-            <p>Click the Displave icon in the menu bar, hover over a saved layout name, and click <strong>Apply</strong>.</p>
-            <p style="margin-top:10px">If an app isn't running, Displave launches it automatically before positioning the windows.</p>
+            <p>Click the menu bar icon, hover over a saved layout, and click <strong>Apply</strong>. If an app isn't running, Displave launches it automatically.</p>
           </div>
         </div>
-
         <div class="step">
           <span class="step-num">05</span>
           <div class="step-body">
             <h3>Delete a layout</h3>
-            <p>Hover over a layout name in the menu and click <strong>Delete</strong>. A confirmation dialog will appear before anything is removed.</p>
+            <p>Hover over a layout and click <strong>Delete</strong>. A confirmation dialog will appear.</p>
           </div>
         </div>
       </div>
@@ -461,29 +241,13 @@
     <p class="section-label">FAQ</p>
     <h2 class="section-title" style="margin-bottom:0">Common questions.</h2>
     <div class="faq-list">
-      <div class="faq-item">
-        <h4>Are layouts saved after I quit Displave?</h4>
-        <p>Yes. Layouts are persisted to disk, so they're available again the next time you launch Displave.</p>
-      </div>
-      <div class="faq-item">
-        <h4>What happens if an app isn't open when I apply a layout?</h4>
-        <p>Displave launches the app automatically, waits for it to be ready, then positions its windows.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Does it work with apps like Slack that change their window title dynamically?</h4>
-        <p>Yes. Displave identifies windows by app name rather than window title, so dynamic titles aren't a problem.</p>
-      </div>
-      <div class="faq-item">
-        <h4>Is an Intel build available?</h4>
-        <p>The current release is Apple Silicon (arm64) only. For Intel, clone the repository and build from source.</p>
-      </div>
-      <div class="faq-item">
-        <h4>How do I change the display language?</h4>
-        <p>Displave reads your macOS system language automatically. It displays in Japanese when the system language is set to Japanese, and in English otherwise.</p>
-      </div>
+      <div class="faq-item"><h4>Are layouts saved after I quit Displave?</h4><p>Yes. Layouts are persisted to disk and available again the next time you launch.</p></div>
+      <div class="faq-item"><h4>What if an app isn't open when I apply a layout?</h4><p>Displave launches it automatically, then positions its windows.</p></div>
+      <div class="faq-item"><h4>Does it work with apps like Slack that change their title?</h4><p>Yes. Displave identifies windows by app name, so dynamic titles aren't a problem.</p></div>
+      <div class="faq-item"><h4>Is an Intel build available?</h4><p>The current release is Apple Silicon only. Clone the repo and build from source for Intel.</p></div>
+      <div class="faq-item"><h4>How do I change the display language?</h4><p>Displave reads your macOS system language automatically — Japanese or English.</p></div>
     </div>
-
-    <div style="margin-top:48px">
+    <div style="margin-top:40px">
       <p class="section-label">Requirements</p>
       <div class="req-tags">
         <span class="req-tag">macOS 13 Ventura or later</span>
@@ -496,9 +260,7 @@
   <section class="cta-section" id="download">
     <h2>Ready to reclaim your workspace?</h2>
     <p>Free download. No account required.</p>
-    <a class="btn-primary" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg" style="font-size:16px;padding:15px 32px">
-      Download Displave
-    </a>
+    <a class="btn-primary" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg" style="font-size:15px;padding:13px 30px">Download Displave</a>
     <p class="cta-meta">v0.1.0 &nbsp;·&nbsp; macOS &nbsp;·&nbsp; Apple Silicon</p>
   </section>
 
