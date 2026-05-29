@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Displave — Window Layout Manager for macOS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --fg: #1a1a1a;
+      --fg-muted: #6b6b6b;
+      --fg-subtle: #a0a0a0;
+      --border: #e8e8e8;
+      --surface: #f7f7f7;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 60px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo img { height: 18px; display: block; }
+
+    .nav-center { display: flex; gap: 28px; list-style: none; }
+
+    .nav-center a {
+      font-size: 14px;
+      color: var(--fg-muted);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: color 0.15s;
+    }
+
+    .nav-center a:hover { color: var(--fg); }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .lang-link {
+      font-size: 13px;
+      color: var(--fg-subtle);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.15s;
+    }
+
+    .lang-link:hover { color: var(--fg); }
+
+    .btn-nav {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 7px 16px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn-nav:hover { opacity: 0.75; }
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 112px 24px 88px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      font-size: clamp(38px, 7vw, 64px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      margin-bottom: 24px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: var(--fg-muted);
+      max-width: 500px;
+      letter-spacing: -0.01em;
+      line-height: 1.6;
+      margin-bottom: 44px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+    .btn-primary {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--bg);
+      background: var(--fg);
+      padding: 13px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.75; }
+
+    .btn-secondary {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--fg);
+      border: 1.5px solid var(--border);
+      padding: 13px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: border-color 0.15s;
+    }
+
+    .btn-secondary:hover { border-color: #aaa; }
+
+    .hero-meta { margin-top: 18px; font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
+
+    .icon-wrap { display: flex; justify-content: center; padding: 0 24px 80px; }
+
+    .app-icon {
+      width: 140px;
+      height: 140px;
+      background: #1a1a1a;
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.16), 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    .app-icon svg { width: 88px; height: 88px; }
+
+    .section { padding: 80px 24px; max-width: 960px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--fg-subtle);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 48px;
+    }
+
+    .centered { text-align: center; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .feature-card { background: var(--bg); padding: 32px 28px; }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--surface);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    .feature-card h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.65; letter-spacing: -0.01em; }
+
+    .usage-section { background: var(--surface); padding: 80px 24px; }
+    .usage-inner { max-width: 800px; margin: 0 auto; }
+
+    .steps { display: flex; flex-direction: column; margin-top: 48px; }
+
+    .step {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 20px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step:last-child { border-bottom: none; }
+
+    .step-num { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; color: var(--fg-subtle); padding-top: 3px; }
+
+    .step-body h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .step-body p { font-size: 14px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.65; }
+
+    kbd {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", monospace;
+      font-size: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 7px;
+      color: var(--fg);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--fg-muted);
+      letter-spacing: -0.01em;
+      line-height: 1.6;
+    }
+
+    .tip-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+
+    .perm-card { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 20px; }
+    .perm-card h4 { font-size: 14px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .perm-card p { font-size: 13px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.55; }
+
+    .faq-list { display: flex; flex-direction: column; margin-top: 40px; border-top: 1px solid var(--border); }
+
+    .faq-item { padding: 24px 0; border-bottom: 1px solid var(--border); }
+    .faq-item h4 { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .faq-item p { font-size: 14px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.65; }
+
+    .req-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .req-tag { font-size: 13px; color: var(--fg-muted); background: var(--surface); padding: 5px 12px; border-radius: 100px; }
+
+    .cta-section { padding: 96px 24px; text-align: center; border-top: 1px solid var(--border); }
+
+    .cta-section h2 {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 14px;
+    }
+
+    .cta-section p { font-size: 16px; color: var(--fg-muted); margin-bottom: 36px; letter-spacing: -0.01em; }
+    .cta-meta { margin-top: 14px; font-size: 12px; color: var(--fg-subtle); }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    footer img { height: 14px; opacity: 0.35; }
+    footer p { font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
+    footer a { color: var(--fg-subtle); text-decoration: none; }
+    footer a:hover { color: var(--fg); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .nav-center { display: none; }
+      footer { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="#"><img src="assets/logo.svg" alt="Displave" /></a>
+    <ul class="nav-center">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#usage">Usage</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <a class="lang-link" href="index.html">日本語</a>
+      <a class="btn-nav" href="#download">Download</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Your workspace,<br>one click away.</h1>
+    <p>Displave saves and applies your window layout instantly. Switch between work modes without rearranging windows every time.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg">Download for Mac</a>
+      <a class="btn-secondary" href="#usage">See how it works</a>
+    </div>
+    <p class="hero-meta">macOS 13 Ventura or later &nbsp;·&nbsp; Apple Silicon</p>
+  </section>
+
+  <div class="icon-wrap">
+    <div class="app-icon">
+      <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="80" y="80" width="155" height="145" rx="12" fill="white"/>
+        <rect x="265" y="80" width="155" height="145" rx="12" fill="white"/>
+        <rect x="80" y="275" width="340" height="145" rx="12" fill="#555"/>
+      </svg>
+    </div>
+  </div>
+
+  <section class="section" id="features">
+    <p class="section-label centered">Features</p>
+    <h2 class="section-title centered">Everything you need,<br>nothing you don't.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⊞</div>
+        <h3>Save Any Layout</h3>
+        <p>Capture the position and size of every open window with a single click from the menu bar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">↩</div>
+        <h3>Apply Instantly</h3>
+        <p>Select a saved layout and every window snaps back to exactly where you left it.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">◫</div>
+        <h3>Window Ordering</h3>
+        <p>Preserves the z-order of your windows — not just position and size, but the full stack.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⌘</div>
+        <h3>Keyboard Shortcut</h3>
+        <p>Press <kbd>⌘⇧S</kbd> to save the current layout without touching the mouse.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">◑</div>
+        <h3>Multi-Display</h3>
+        <p>Tracks which display each window belongs to so your layout is accurate across screens.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">↑</div>
+        <h3>Lives in the Menu Bar</h3>
+        <p>No dock icon. No distractions. Displave stays out of the way until you need it.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="usage-section" id="usage">
+    <div class="usage-inner">
+      <p class="section-label">Usage</p>
+      <h2 class="section-title" style="margin-bottom:0">From start to finish.</h2>
+
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <div class="step-body">
+            <h3>Install</h3>
+            <p>Download the DMG, open it, and drag Displave to your Applications folder. Launch it — a Displave icon will appear in your menu bar.</p>
+            <div class="tip">
+              <span class="tip-icon">ℹ</span>
+              <span>On first launch, a dialog will ask you to grant Accessibility permission. Click "Open System Settings" and enable Displave in the list.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-num">02</span>
+          <div class="step-body">
+            <h3>Grant Accessibility Permission</h3>
+            <p>Displave needs Accessibility permission to read and move window positions.</p>
+            <div class="perm-grid">
+              <div class="perm-card">
+                <h4>How to enable</h4>
+                <p>System Settings → Privacy &amp; Security → Accessibility → toggle Displave on</p>
+              </div>
+              <div class="perm-card">
+                <h4>What is collected</h4>
+                <p>Only window position, size, and app name. No screen content or personal data is ever read.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-num">03</span>
+          <div class="step-body">
+            <h3>Save the current layout</h3>
+            <p>Arrange your windows the way you like, then click the Displave icon in the menu bar and choose <strong>Save Current Layout</strong>. You can also press <kbd>⌘⇧S</kbd>.</p>
+            <p style="margin-top:10px">Enter a name and save. Repeat for as many layouts as you need.</p>
+            <div class="tip">
+              <span class="tip-icon">💡</span>
+              <span>Use descriptive names like "Coding", "Meeting", or "Writing" so you can switch modes at a glance.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-num">04</span>
+          <div class="step-body">
+            <h3>Apply a layout</h3>
+            <p>Click the Displave icon in the menu bar, hover over a saved layout name, and click <strong>Apply</strong>.</p>
+            <p style="margin-top:10px">If an app isn't running, Displave launches it automatically before positioning the windows.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <span class="step-num">05</span>
+          <div class="step-body">
+            <h3>Delete a layout</h3>
+            <p>Hover over a layout name in the menu and click <strong>Delete</strong>. A confirmation dialog will appear before anything is removed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" id="faq" style="max-width:760px">
+    <p class="section-label">FAQ</p>
+    <h2 class="section-title" style="margin-bottom:0">Common questions.</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <h4>Are layouts saved after I quit Displave?</h4>
+        <p>Yes. Layouts are persisted to disk, so they're available again the next time you launch Displave.</p>
+      </div>
+      <div class="faq-item">
+        <h4>What happens if an app isn't open when I apply a layout?</h4>
+        <p>Displave launches the app automatically, waits for it to be ready, then positions its windows.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Does it work with apps like Slack that change their window title dynamically?</h4>
+        <p>Yes. Displave identifies windows by app name rather than window title, so dynamic titles aren't a problem.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Is an Intel build available?</h4>
+        <p>The current release is Apple Silicon (arm64) only. For Intel, clone the repository and build from source.</p>
+      </div>
+      <div class="faq-item">
+        <h4>How do I change the display language?</h4>
+        <p>Displave reads your macOS system language automatically. It displays in Japanese when the system language is set to Japanese, and in English otherwise.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:48px">
+      <p class="section-label">Requirements</p>
+      <div class="req-tags">
+        <span class="req-tag">macOS 13 Ventura or later</span>
+        <span class="req-tag">Apple Silicon</span>
+        <span class="req-tag">Accessibility permission</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="download">
+    <h2>Ready to reclaim your workspace?</h2>
+    <p>Free download. No account required.</p>
+    <a class="btn-primary" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg" style="font-size:16px;padding:15px 32px">
+      Download Displave
+    </a>
+    <p class="cta-meta">v0.1.0 &nbsp;·&nbsp; macOS &nbsp;·&nbsp; Apple Silicon</p>
+  </section>
+
+  <footer>
+    <img src="assets/logo.svg" alt="Displave" />
+    <p>© 2025 JIROMO &nbsp;·&nbsp; <a href="https://github.com/JIROMO/Displave">GitHub</a></p>
+  </footer>
+
+</body>
+</html>
