@@ -1,10 +1,16 @@
 # Displave
 
+[![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![release](https://img.shields.io/github/v/release/JIROMO/Displave)](https://github.com/JIROMO/Displave/releases)
+[![downloads](https://img.shields.io/github/downloads/JIROMO/Displave/total)](https://github.com/JIROMO/Displave/releases)
+[![build](https://img.shields.io/badge/build-passing-brightgreen)](#)
+[![website](https://img.shields.io/badge/website-displave.com-blue)](https://displave.com)
+[![docs](https://img.shields.io/badge/docs-日本語-lightgrey)](https://displave.com)
+[![docs](https://img.shields.io/badge/docs-English-lightgrey)](https://displave.com/en.html)
+
 **Your workspace, one click away.**
 
 Displave is a macOS menu bar app that saves and applies window layouts instantly. Switch between work modes without rearranging windows every time.
-
-[日本語](https://displave.com) · [English](https://displave.com/en.html) · [Download](#download)
 
 ---
 
