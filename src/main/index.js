@@ -1,29 +1,32 @@
-const { app, nativeTheme } = require('electron')
-const { TrayManager } = require('./tray')
-const { checkAccessibilityPermission, requestAccessibilityPermission } = require('./permissions')
+const { app, nativeTheme } = require("electron");
+const { TrayManager } = require("./tray");
+const {
+  checkAccessibilityPermission,
+  requestAccessibilityPermission,
+} = require("./permissions");
 
-app.setName('Displave')
-app.dock?.hide()
+app.setName("Displave");
+app.dock?.hide();
 
 if (!app.requestSingleInstanceLock()) {
-  app.quit()
+  app.quit();
 }
 
-let trayManager
+let trayManager;
 
 app.whenReady().then(() => {
-  trayManager = new TrayManager()
-  trayManager.init()
+  trayManager = new TrayManager();
+  trayManager.init();
 
   if (!checkAccessibilityPermission()) {
-    requestAccessibilityPermission()
+    requestAccessibilityPermission();
   }
-})
+});
 
-app.on('window-all-closed', (e) => {
-  e.preventDefault()
-})
+app.on("window-all-closed", (e) => {
+  e.preventDefault();
+});
 
-nativeTheme.on('updated', () => {
-  trayManager?.updateIcon()
-})
+nativeTheme.on("updated", () => {
+  trayManager?.updateIcon();
+});
