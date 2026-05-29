@@ -50,13 +50,12 @@
 
     .nav-logo img { height: 18px; display: block; filter: invert(1); }
     .nav-center { display: flex; gap: 28px; list-style: none; }
-    a { text-decoration: none; }
-    .nav-center a { font-size: 14px; color: var(--fg-muted); letter-spacing: -0.01em; transition: color 0.15s; }
+    .nav-center a { font-size: 14px; color: var(--fg-muted); text-decoration: none !important; border-bottom: none !important; letter-spacing: -0.01em; transition: color 0.15s; }
     .nav-center a:hover { color: var(--fg); }
     .nav-right { display: flex; align-items: center; gap: 12px; }
-    .lang-link { font-size: 13px; color: var(--fg-subtle); text-decoration: none; transition: color 0.15s; }
+    .lang-link { font-size: 13px; color: var(--fg-subtle); text-decoration: none !important; border-bottom: none !important; transition: color 0.15s; }
     .lang-link:hover { color: var(--fg); }
-    .btn-nav { font-size: 13px; font-weight: 500; color: #0f0f0f; background: var(--fg); padding: 7px 16px; border-radius: 100px; text-decoration: none; transition: opacity 0.15s; }
+    .btn-nav { font-size: 13px; font-weight: 500; color: #0f0f0f; background: var(--fg); padding: 7px 16px; border-radius: 100px; text-decoration: none !important; border-bottom: none !important; transition: opacity 0.15s; }
     .btn-nav:hover { opacity: 0.8; }
 
     .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 120px 24px 96px; max-width: 720px; margin: 0 auto; }
@@ -130,8 +129,8 @@
     footer { border-top: 1px solid var(--border); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     footer p { font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
     .footer-links { display: flex; gap: 20px; }
-    .footer-links a { font-size: 12px; color: var(--fg-subtle); text-decoration: none !important; letter-spacing: -0.01em; transition: color 0.15s; }
-    .footer-links a:hover { color: var(--fg); text-decoration: none !important; }
+    .footer-links a { font-size: 12px; color: var(--fg-subtle); text-decoration: none !important; border-bottom: none !important; letter-spacing: -0.01em; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--fg); }
 
     @media (max-width: 600px) {
       nav { padding: 0 20px; }
