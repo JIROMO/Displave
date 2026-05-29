@@ -33,7 +33,7 @@
       line-height: 1.6;
     }
 
-    nav {
+    .nav-header {
       position: sticky;
       top: 0;
       z-index: 100;
@@ -132,7 +132,7 @@
     .footer-links a:hover { color: var(--fg); }
 
     @media (max-width: 600px) {
-      nav { padding: 0 20px; }
+      .nav-header { padding: 0 20px; }
       .nav-center { display: none; }
       footer { padding: 20px; }
     }
@@ -140,7 +140,7 @@
 </head>
 <body>
 
-  <nav>
+  <nav class="nav-header">
     <a class="nav-logo" href="#"><img src="assets/logo.svg" alt="Displave" /></a>
     <ul class="nav-center">
       <li><a href="#features">Features</a></li>

@@ -1,485 +1,779 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Displave — macOS ウィンドウレイアウト管理</title>
-  <link rel="icon" href="favicon.ico" sizes="any" />
-  <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
-  <link rel="icon" href="favicon-16x16.png" type="image/png" sizes="16x16" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Displave — macOS ウィンドウレイアウト管理</title>
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" href="favicon-32x32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="favicon-16x16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    :root {
-      --bg: #0f0f0f;
-      --bg-2: #181818;
-      --bg-3: #222222;
-      --fg: #f0f0f0;
-      --fg-muted: #888;
-      --fg-subtle: #555;
-      --border: #2a2a2a;
-      --radius: 14px;
-      --radius-sm: 8px;
-    }
+      :root {
+        --bg: #0f0f0f;
+        --bg-2: #181818;
+        --bg-3: #222222;
+        --fg: #f0f0f0;
+        --fg-muted: #888;
+        --fg-subtle: #555;
+        --border: #2a2a2a;
+        --radius: 14px;
+        --radius-sm: 8px;
+      }
 
-    html { scroll-behavior: smooth; }
+      html {
+        scroll-behavior: smooth;
+      }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.6;
-    }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+          sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        -webkit-font-smoothing: antialiased;
+        line-height: 1.6;
+      }
 
-    /* NAV */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      height: 56px;
-      background: rgba(15,15,15,0.85);
-      backdrop-filter: saturate(180%) blur(20px);
-      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      /* NAV */
+      .nav-header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        height: 56px;
+        background: rgba(15, 15, 15, 0.85);
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+      }
 
-    }
+      .nav-logo img {
+        height: 18px;
+        display: block;
+        filter: invert(1);
+      }
 
-    .nav-logo img { height: 18px; display: block; filter: invert(1); }
+      .nav-center {
+        display: flex;
+        gap: 28px;
+        list-style: none;
+      }
 
-    .nav-center { display: flex; gap: 28px; list-style: none; }
+      .nav-center a {
+        font-size: 14px;
+        color: var(--fg-muted);
+        text-decoration: none !important;
+        border-bottom: none !important;
+        letter-spacing: -0.01em;
+        transition: color 0.15s;
+      }
 
-    .nav-center a {
-      font-size: 14px;
-      color: var(--fg-muted);
-      text-decoration: none !important;
-      border-bottom: none !important;
-      letter-spacing: -0.01em;
-      transition: color 0.15s;
-    }
+      .nav-center a:hover {
+        color: var(--fg);
+      }
 
-    .nav-center a:hover { color: var(--fg); }
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-    .nav-right { display: flex; align-items: center; gap: 12px; }
+      .lang-link {
+        font-size: 13px;
+        color: var(--fg-subtle);
+        text-decoration: none !important;
+        border-bottom: none !important;
+        transition: color 0.15s;
+      }
 
-    .lang-link {
-      font-size: 13px;
-      color: var(--fg-subtle);
-      text-decoration: none !important;
-      border-bottom: none !important;
-      transition: color 0.15s;
-    }
+      .lang-link:hover {
+        color: var(--fg);
+      }
 
-    .lang-link:hover { color: var(--fg); }
+      .btn-nav {
+        font-size: 13px;
+        font-weight: 500;
+        color: #0f0f0f;
+        background: var(--fg);
+        padding: 7px 16px;
+        border-radius: 100px;
+        text-decoration: none !important;
+        border-bottom: none !important;
+        transition: opacity 0.15s;
+      }
 
-    .btn-nav {
-      font-size: 13px;
-      font-weight: 500;
-      color: #0f0f0f;
-      background: var(--fg);
-      padding: 7px 16px;
-      border-radius: 100px;
-      text-decoration: none !important;
-      border-bottom: none !important;
-      transition: opacity 0.15s;
-    }
+      .btn-nav:hover {
+        opacity: 0.8;
+      }
 
-    .btn-nav:hover { opacity: 0.8; }
+      /* HERO */
+      .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 120px 24px 96px;
+        max-width: 720px;
+        margin: 0 auto;
+      }
 
-    /* HERO */
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 120px 24px 96px;
-      max-width: 720px;
-      margin: 0 auto;
-    }
+      .hero h1 {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+          sans-serif;
+        font-size: clamp(40px, 7vw, 68px);
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        line-height: 1.08;
+        margin-bottom: 24px;
+        color: var(--fg);
+      }
 
-    .hero h1 {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-size: clamp(40px, 7vw, 68px);
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1.08;
-      margin-bottom: 24px;
-      color: var(--fg);
-    }
+      .hero p {
+        font-size: 18px;
+        color: var(--fg-muted);
+        max-width: 480px;
+        letter-spacing: -0.01em;
+        line-height: 1.6;
+        margin-bottom: 44px;
+      }
 
-    .hero p {
-      font-size: 18px;
-      color: var(--fg-muted);
-      max-width: 480px;
-      letter-spacing: -0.01em;
-      line-height: 1.6;
-      margin-bottom: 44px;
-    }
+      .hero-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
 
-    .hero-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+      .btn-primary {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0f0f0f;
+        background: var(--fg);
+        padding: 11px 24px;
+        border-radius: 100px;
+        text-decoration: none;
+        letter-spacing: -0.01em;
+        transition: opacity 0.15s;
+      }
 
-    .btn-primary {
-      font-size: 14px;
-      font-weight: 600;
-      color: #0f0f0f;
-      background: var(--fg);
-      padding: 11px 24px;
-      border-radius: 100px;
-      text-decoration: none;
-      letter-spacing: -0.01em;
-      transition: opacity 0.15s;
-    }
+      .btn-primary:hover {
+        opacity: 0.8;
+      }
 
-    .btn-primary:hover { opacity: 0.8; }
+      .btn-secondary {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--fg-muted);
+        border: 1px solid var(--border);
+        padding: 11px 24px;
+        border-radius: 100px;
+        text-decoration: none;
+        letter-spacing: -0.01em;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+      }
 
-    .btn-secondary {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--fg-muted);
-      border: 1px solid var(--border);
-      padding: 11px 24px;
-      border-radius: 100px;
-      text-decoration: none;
-      letter-spacing: -0.01em;
-      transition: border-color 0.15s, color 0.15s;
-    }
+      .btn-secondary:hover {
+        border-color: #555;
+        color: var(--fg);
+      }
 
-    .btn-secondary:hover { border-color: #555; color: var(--fg); }
+      .hero-meta {
+        margin-top: 20px;
+        font-size: 12px;
+        color: var(--fg-subtle);
+        letter-spacing: -0.01em;
+      }
 
-    .hero-meta { margin-top: 20px; font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
+      /* APP ICON */
+      .icon-wrap {
+        display: flex;
+        justify-content: center;
+        padding: 0 24px 88px;
+      }
 
-    /* APP ICON */
-    .icon-wrap { display: flex; justify-content: center; padding: 0 24px 88px; }
+      .app-icon {
+        width: 128px;
+        height: 128px;
+        background: #1a1a1a;
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
 
-    .app-icon {
-      width: 128px;
-      height: 128px;
-      background: #1a1a1a;
-      border-radius: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--border);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    }
+      .app-icon svg {
+        width: 80px;
+        height: 80px;
+      }
 
-    .app-icon svg { width: 80px; height: 80px; }
+      /* SECTION */
+      .section {
+        padding: 72px 24px;
+        max-width: 960px;
+        margin: 0 auto;
+      }
 
-    /* SECTION */
-    .section { padding: 72px 24px; max-width: 960px; margin: 0 auto; }
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--fg-subtle);
+        margin-bottom: 12px;
+      }
 
-    .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--fg-subtle);
-      margin-bottom: 12px;
-    }
+      .section-title {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+          sans-serif;
+        font-size: clamp(24px, 3.5vw, 36px);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin-bottom: 40px;
+        color: var(--fg);
+      }
 
-    .section-title {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-size: clamp(24px, 3.5vw, 36px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      margin-bottom: 40px;
-      color: var(--fg);
-    }
+      .centered {
+        text-align: center;
+      }
 
-    .centered { text-align: center; }
+      /* FEATURES */
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
 
-    /* FEATURES */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
+      .feature-card {
+        background: var(--bg-2);
+        padding: 28px 24px;
+      }
 
-    .feature-card { background: var(--bg-2); padding: 28px 24px; }
+      .feature-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--bg-3);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        font-size: 16px;
+      }
 
-    .feature-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--bg-3);
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      font-size: 16px;
-    }
+      .feature-card h3 {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 6px;
+        color: var(--fg);
+      }
+      .feature-card p {
+        font-size: 13px;
+        color: var(--fg-muted);
+        line-height: 1.65;
+      }
 
-    .feature-card h3 { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--fg); }
-    .feature-card p { font-size: 13px; color: var(--fg-muted); line-height: 1.65; }
+      /* USAGE */
+      .usage-section {
+        background: var(--bg-2);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 72px 24px;
+      }
+      .usage-inner {
+        max-width: 760px;
+        margin: 0 auto;
+      }
 
-    /* USAGE */
-    .usage-section { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 72px 24px; }
-    .usage-inner { max-width: 760px; margin: 0 auto; }
+      .steps {
+        display: flex;
+        flex-direction: column;
+        margin-top: 40px;
+      }
 
-    .steps { display: flex; flex-direction: column; margin-top: 40px; }
+      .step {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 16px;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border);
+      }
 
-    .step {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 16px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--border);
-    }
+      .step:last-child {
+        border-bottom: none;
+      }
 
-    .step:last-child { border-bottom: none; }
+      .step-num {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: var(--fg-subtle);
+        padding-top: 3px;
+      }
 
-    .step-num { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; color: var(--fg-subtle); padding-top: 3px; }
+      .step-body h3 {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 6px;
+        color: var(--fg);
+      }
+      .step-body p {
+        font-size: 13px;
+        color: var(--fg-muted);
+        letter-spacing: -0.01em;
+        line-height: 1.65;
+      }
 
-    .step-body h3 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--fg); }
-    .step-body p { font-size: 13px; color: var(--fg-muted); letter-spacing: -0.01em; line-height: 1.65; }
+      kbd {
+        font-family: -apple-system, "SF Mono", "Menlo", monospace;
+        font-size: 11px;
+        background: var(--bg-3);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 2px 6px;
+        color: var(--fg);
+      }
 
-    kbd {
-      font-family: -apple-system, "SF Mono", "Menlo", monospace;
-      font-size: 11px;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 2px 6px;
-      color: var(--fg);
-    }
+      .tip {
+        display: flex;
+        gap: 10px;
+        background: var(--bg-3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--fg-muted);
+        line-height: 1.6;
+      }
 
-    .tip {
-      display: flex;
-      gap: 10px;
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--fg-muted);
-      line-height: 1.6;
-    }
+      .tip-icon {
+        flex-shrink: 0;
+      }
 
-    .tip-icon { flex-shrink: 0; }
+      .perm-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
 
-    .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 10px; }
+      .perm-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+        background: var(--bg-3);
+      }
+      .perm-card h4 {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 4px;
+        color: var(--fg);
+      }
+      .perm-card p {
+        font-size: 12px;
+        color: var(--fg-muted);
+        line-height: 1.55;
+      }
 
-    .perm-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; background: var(--bg-3); }
-    .perm-card h4 { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; color: var(--fg); }
-    .perm-card p { font-size: 12px; color: var(--fg-muted); line-height: 1.55; }
+      /* FAQ */
+      .faq-list {
+        display: flex;
+        flex-direction: column;
+        margin-top: 40px;
+        border-top: 1px solid var(--border);
+      }
+      .faq-item {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .faq-item h4 {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 6px;
+        color: var(--fg);
+      }
+      .faq-item p {
+        font-size: 13px;
+        color: var(--fg-muted);
+        line-height: 1.65;
+      }
 
-    /* FAQ */
-    .faq-list { display: flex; flex-direction: column; margin-top: 40px; border-top: 1px solid var(--border); }
-    .faq-item { padding: 20px 0; border-bottom: 1px solid var(--border); }
-    .faq-item h4 { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; color: var(--fg); }
-    .faq-item p { font-size: 13px; color: var(--fg-muted); line-height: 1.65; }
+      .req-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+      }
+      .req-tag {
+        font-size: 12px;
+        color: var(--fg-muted);
+        background: var(--bg-3);
+        border: 1px solid var(--border);
+        padding: 4px 12px;
+        border-radius: 100px;
+      }
 
-    .req-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
-    .req-tag { font-size: 12px; color: var(--fg-muted); background: var(--bg-3); border: 1px solid var(--border); padding: 4px 12px; border-radius: 100px; }
+      /* CTA */
+      .cta-section {
+        padding: 96px 24px;
+        text-align: center;
+        border-top: 1px solid var(--border);
+      }
 
-    /* CTA */
-    .cta-section { padding: 96px 24px; text-align: center; border-top: 1px solid var(--border); }
+      .cta-section h2 {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+          sans-serif;
+        font-size: clamp(24px, 4vw, 40px);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin-bottom: 12px;
+        color: var(--fg);
+      }
 
-    .cta-section h2 {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif;
-      font-size: clamp(24px, 4vw, 40px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      margin-bottom: 12px;
-      color: var(--fg);
-    }
+      .cta-section p {
+        font-size: 15px;
+        color: var(--fg-muted);
+        margin-bottom: 32px;
+      }
+      .cta-meta {
+        margin-top: 12px;
+        font-size: 12px;
+        color: var(--fg-subtle);
+      }
 
-    .cta-section p { font-size: 15px; color: var(--fg-muted); margin-bottom: 32px; }
-    .cta-meta { margin-top: 12px; font-size: 12px; color: var(--fg-subtle); }
+      /* FOOTER */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 24px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
+      footer p {
+        font-size: 12px;
+        color: var(--fg-subtle);
+        letter-spacing: -0.01em;
+      }
+      .footer-links {
+        display: flex;
+        gap: 20px;
+      }
+      .footer-links a {
+        font-size: 12px;
+        color: var(--fg-subtle);
+        text-decoration: none !important;
+        border-bottom: none !important;
+        letter-spacing: -0.01em;
+        transition: color 0.15s;
+      }
+      .footer-links a:hover {
+        color: var(--fg);
+      }
 
-    footer p { font-size: 12px; color: var(--fg-subtle); letter-spacing: -0.01em; }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-links a { font-size: 12px; color: var(--fg-subtle); text-decoration: none !important; border-bottom: none !important; letter-spacing: -0.01em; transition: color 0.15s; }
-    .footer-links a:hover { color: var(--fg); }
+      @media (max-width: 600px) {
+        .nav-header {
+          padding: 0 20px;
+        }
+        .nav-center {
+          display: none;
+        }
+        footer {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="nav-header">
+      <a class="nav-logo" href="#"
+        ><img src="assets/logo.svg" alt="Displave"
+      /></a>
+      <ul class="nav-center">
+        <li><a href="#features">機能</a></li>
+        <li><a href="#usage">使い方</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="nav-right">
+        <a class="lang-link" href="https://displave.com/en.html">English</a>
+        <a
+          class="btn-nav"
+          href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg"
+          >ダウンロード</a
+        >
+      </div>
+    </nav>
 
-    @media (max-width: 600px) {
-      nav { padding: 0 20px; }
-      .nav-center { display: none; }
-      footer { padding: 20px; }
-    }
-  </style>
-</head>
-<body>
+    <section class="hero">
+      <h1>ワークスペースを、<br />ワンクリックで。</h1>
+      <p>
+        ウィンドウの配置を保存して、いつでも一瞬で再現。作業モードの切り替えがスムーズになります。
+      </p>
+      <div class="hero-actions">
+        <a
+          class="btn-primary"
+          href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg"
+          >Mac 版をダウンロード</a
+        >
+        <a class="btn-secondary" href="#usage">使い方を見る</a>
+      </div>
+      <p class="hero-meta">macOS 13 Ventura 以降 &nbsp;·&nbsp; Apple Silicon</p>
+    </section>
 
-  <nav>
-    <a class="nav-logo" href="#"><img src="assets/logo.svg" alt="Displave" /></a>
-    <ul class="nav-center">
-      <li><a href="#features">機能</a></li>
-      <li><a href="#usage">使い方</a></li>
-      <li><a href="#faq">FAQ</a></li>
-    </ul>
-    <div class="nav-right">
-      <a class="lang-link" href="https://displave.com/en.html">English</a>
-      <a class="btn-nav" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg">ダウンロード</a>
+    <div class="icon-wrap">
+      <div class="app-icon">
+        <svg
+          viewBox="0 0 500 500"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="80" y="80" width="155" height="145" rx="12" fill="white" />
+          <rect x="265" y="80" width="155" height="145" rx="12" fill="white" />
+          <rect x="80" y="275" width="340" height="145" rx="12" fill="#555" />
+        </svg>
+      </div>
     </div>
-  </nav>
 
-  <section class="hero">
-    <h1>ワークスペースを、<br>ワンクリックで。</h1>
-    <p>ウィンドウの配置を保存して、いつでも一瞬で再現。作業モードの切り替えがスムーズになります。</p>
-    <div class="hero-actions">
-      <a class="btn-primary" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg">Mac 版をダウンロード</a>
-      <a class="btn-secondary" href="#usage">使い方を見る</a>
-    </div>
-    <p class="hero-meta">macOS 13 Ventura 以降 &nbsp;·&nbsp; Apple Silicon</p>
-  </section>
-
-  <div class="icon-wrap">
-    <div class="app-icon">
-      <svg viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="80" y="80" width="155" height="145" rx="12" fill="white"/>
-        <rect x="265" y="80" width="155" height="145" rx="12" fill="white"/>
-        <rect x="80" y="275" width="340" height="145" rx="12" fill="#555"/>
-      </svg>
-    </div>
-  </div>
-
-  <section class="section" id="features">
-    <p class="section-label centered">機能</p>
-    <h2 class="section-title centered">必要なものだけ。</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">⊞</div>
-        <h3>レイアウトを保存</h3>
-        <p>メニューバーからワンクリックで、すべてのウィンドウの位置とサイズを記録します。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">↩</div>
-        <h3>瞬時に適用</h3>
-        <p>保存したレイアウトを選ぶだけで、ウィンドウが元の位置に自動で戻ります。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">◫</div>
-        <h3>重なり順も再現</h3>
-        <p>位置・サイズだけでなく、ウィンドウの前後の順序も保存・再現します。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">⌘</div>
-        <h3>キーボードショートカット</h3>
-        <p><kbd>⌘⇧S</kbd> を押すだけで現在の配置を保存できます。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">◑</div>
-        <h3>マルチディスプレイ</h3>
-        <p>どのディスプレイにあるかも記録するため、複数画面でも正確に再現します。</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">↑</div>
-        <h3>メニューバーに常駐</h3>
-        <p>Dock アイコンなし。必要なときだけ呼び出せます。</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="usage-section" id="usage">
-    <div class="usage-inner">
-      <p class="section-label">使い方</p>
-      <h2 class="section-title" style="margin-bottom:0">はじめから終わりまで。</h2>
-      <div class="steps">
-        <div class="step">
-          <span class="step-num">01</span>
-          <div class="step-body">
-            <h3>インストール</h3>
-            <p>DMG をダウンロードして開き、Displave をアプリケーションフォルダへドラッグします。起動するとメニューバーにアイコンが表示されます。</p>
-            <div class="tip"><span class="tip-icon">ℹ</span><span>初回起動時にアクセシビリティ権限の付与を求めるダイアログが表示されます。「システム設定を開く」をクリックして権限を有効にしてください。</span></div>
-          </div>
+    <section class="section" id="features">
+      <p class="section-label centered">機能</p>
+      <h2 class="section-title centered">必要なものだけ。</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⊞</div>
+          <h3>レイアウトを保存</h3>
+          <p>
+            メニューバーからワンクリックで、すべてのウィンドウの位置とサイズを記録します。
+          </p>
         </div>
-        <div class="step">
-          <span class="step-num">02</span>
-          <div class="step-body">
-            <h3>アクセシビリティ権限を付与する</h3>
-            <p>Displave はウィンドウの位置・サイズを取得・操作するためにアクセシビリティ権限が必要です。</p>
-            <div class="perm-grid">
-              <div class="perm-card"><h4>設定手順</h4><p>システム設定 → プライバシーとセキュリティ → アクセシビリティ → Displave をオンにする</p></div>
-              <div class="perm-card"><h4>収集するデータ</h4><p>ウィンドウの位置・サイズ・アプリ名のみ。個人データは一切取得しません。</p></div>
+        <div class="feature-card">
+          <div class="feature-icon">↩</div>
+          <h3>瞬時に適用</h3>
+          <p>
+            保存したレイアウトを選ぶだけで、ウィンドウが元の位置に自動で戻ります。
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◫</div>
+          <h3>重なり順も再現</h3>
+          <p>
+            位置・サイズだけでなく、ウィンドウの前後の順序も保存・再現します。
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⌘</div>
+          <h3>キーボードショートカット</h3>
+          <p><kbd>⌘⇧S</kbd> を押すだけで現在の配置を保存できます。</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">◑</div>
+          <h3>マルチディスプレイ</h3>
+          <p>
+            どのディスプレイにあるかも記録するため、複数画面でも正確に再現します。
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">↑</div>
+          <h3>メニューバーに常駐</h3>
+          <p>Dock アイコンなし。必要なときだけ呼び出せます。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="usage-section" id="usage">
+      <div class="usage-inner">
+        <p class="section-label">使い方</p>
+        <h2 class="section-title" style="margin-bottom: 0">
+          はじめから終わりまで。
+        </h2>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">01</span>
+            <div class="step-body">
+              <h3>インストール</h3>
+              <p>
+                DMG をダウンロードして開き、Displave
+                をアプリケーションフォルダへドラッグします。起動するとメニューバーにアイコンが表示されます。
+              </p>
+              <div class="tip">
+                <span class="tip-icon">ℹ</span
+                ><span
+                  >初回起動時にアクセシビリティ権限の付与を求めるダイアログが表示されます。「システム設定を開く」をクリックして権限を有効にしてください。</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <div class="step-body">
+              <h3>アクセシビリティ権限を付与する</h3>
+              <p>
+                Displave
+                はウィンドウの位置・サイズを取得・操作するためにアクセシビリティ権限が必要です。
+              </p>
+              <div class="perm-grid">
+                <div class="perm-card">
+                  <h4>設定手順</h4>
+                  <p>
+                    システム設定 → プライバシーとセキュリティ → アクセシビリティ
+                    → Displave をオンにする
+                  </p>
+                </div>
+                <div class="perm-card">
+                  <h4>収集するデータ</h4>
+                  <p>
+                    ウィンドウの位置・サイズ・アプリ名のみ。個人データは一切取得しません。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <div class="step-body">
+              <h3>レイアウトを保存する</h3>
+              <p>
+                ウィンドウを好みの配置に並べたら、メニューバーの Displave
+                アイコンをクリックして
+                <strong>Save Layout</strong> を選択。または
+                <kbd>⌘⇧S</kbd> でも保存できます。
+              </p>
+              <div class="tip">
+                <span class="tip-icon">💡</span
+                ><span
+                  >「開発モード」「ミーティング」など、作業内容がわかる名前をつけると切り替えがスムーズです。</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">04</span>
+            <div class="step-body">
+              <h3>レイアウトを適用する</h3>
+              <p>
+                メニューバーのアイコンをクリックし、保存済みのレイアウト名にカーソルを合わせて
+                <strong>Apply</strong>
+                をクリック。アプリが起動していない場合は自動で起動します。
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-num">05</span>
+            <div class="step-body">
+              <h3>レイアウトを削除する</h3>
+              <p>
+                レイアウト名にカーソルを合わせて
+                <strong>Delete</strong>
+                をクリック。確認ダイアログが表示されます。
+              </p>
             </div>
           </div>
         </div>
-        <div class="step">
-          <span class="step-num">03</span>
-          <div class="step-body">
-            <h3>レイアウトを保存する</h3>
-            <p>ウィンドウを好みの配置に並べたら、メニューバーの Displave アイコンをクリックして <strong>Save Layout</strong> を選択。または <kbd>⌘⇧S</kbd> でも保存できます。</p>
-            <div class="tip"><span class="tip-icon">💡</span><span>「開発モード」「ミーティング」など、作業内容がわかる名前をつけると切り替えがスムーズです。</span></div>
-          </div>
-        </div>
-        <div class="step">
-          <span class="step-num">04</span>
-          <div class="step-body">
-            <h3>レイアウトを適用する</h3>
-            <p>メニューバーのアイコンをクリックし、保存済みのレイアウト名にカーソルを合わせて <strong>Apply</strong> をクリック。アプリが起動していない場合は自動で起動します。</p>
-          </div>
-        </div>
-        <div class="step">
-          <span class="step-num">05</span>
-          <div class="step-body">
-            <h3>レイアウトを削除する</h3>
-            <p>レイアウト名にカーソルを合わせて <strong>Delete</strong> をクリック。確認ダイアログが表示されます。</p>
-          </div>
-        </div>
       </div>
     </div>
-  </div>
 
-  <section class="section" id="faq" style="max-width:760px">
-    <p class="section-label">FAQ</p>
-    <h2 class="section-title" style="margin-bottom:0">よくある質問</h2>
-    <div class="faq-list">
-      <div class="faq-item"><h4>アプリを閉じてもレイアウトは保存されますか？</h4><p>はい。レイアウトはディスクに保存されるため、再起動後も引き続き利用できます。</p></div>
-      <div class="faq-item"><h4>適用時にアプリが起動していない場合は？</h4><p>Displave が自動でアプリを起動し、起動後にウィンドウの位置を設定します。</p></div>
-      <div class="faq-item"><h4>Slack などタイトルが変わるアプリでも動きますか？</h4><p>はい。アプリ名を基準にウィンドウを特定するため、動的なタイトル変化は問題ありません。</p></div>
-      <div class="faq-item"><h4>Intel Mac でも使えますか？</h4><p>現在のビルドは Apple Silicon 向けです。Intel 版が必要な場合は GitHub からソースをビルドしてください。</p></div>
-      <div class="faq-item"><h4>表示言語を変えるには？</h4><p>macOS のシステム言語設定を自動で読み取ります。日本語設定なら日本語、それ以外は英語で表示されます。</p></div>
-    </div>
-    <div style="margin-top:40px">
-      <p class="section-label">動作環境</p>
-      <div class="req-tags">
-        <span class="req-tag">macOS 13 Ventura 以降</span>
-        <span class="req-tag">Apple Silicon</span>
-        <span class="req-tag">アクセシビリティ権限</span>
+    <section class="section" id="faq" style="max-width: 760px">
+      <p class="section-label">FAQ</p>
+      <h2 class="section-title" style="margin-bottom: 0">よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h4>アプリを閉じてもレイアウトは保存されますか？</h4>
+          <p>
+            はい。レイアウトはディスクに保存されるため、再起動後も引き続き利用できます。
+          </p>
+        </div>
+        <div class="faq-item">
+          <h4>適用時にアプリが起動していない場合は？</h4>
+          <p>
+            Displave
+            が自動でアプリを起動し、起動後にウィンドウの位置を設定します。
+          </p>
+        </div>
+        <div class="faq-item">
+          <h4>Slack などタイトルが変わるアプリでも動きますか？</h4>
+          <p>
+            はい。アプリ名を基準にウィンドウを特定するため、動的なタイトル変化は問題ありません。
+          </p>
+        </div>
+        <div class="faq-item">
+          <h4>Intel Mac でも使えますか？</h4>
+          <p>
+            現在のビルドは Apple Silicon 向けです。Intel 版が必要な場合は GitHub
+            からソースをビルドしてください。
+          </p>
+        </div>
+        <div class="faq-item">
+          <h4>表示言語を変えるには？</h4>
+          <p>
+            macOS
+            のシステム言語設定を自動で読み取ります。日本語設定なら日本語、それ以外は英語で表示されます。
+          </p>
+        </div>
       </div>
-    </div>
-  </section>
+      <div style="margin-top: 40px">
+        <p class="section-label">動作環境</p>
+        <div class="req-tags">
+          <span class="req-tag">macOS 13 Ventura 以降</span>
+          <span class="req-tag">Apple Silicon</span>
+          <span class="req-tag">アクセシビリティ権限</span>
+        </div>
+      </div>
+    </section>
 
-  <section class="cta-section" id="download">
-    <h2>ワークスペースを取り戻そう。</h2>
-    <p>無料。アカウント不要。</p>
-    <a class="btn-primary" href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg" style="font-size:15px;padding:13px 30px">
-      Displave をダウンロード
-    </a>
-    <p class="cta-meta">v0.1.0 &nbsp;·&nbsp; macOS &nbsp;·&nbsp; Apple Silicon</p>
-  </section>
+    <section class="cta-section" id="download">
+      <h2>ワークスペースを取り戻そう。</h2>
+      <p>無料。アカウント不要。</p>
+      <a
+        class="btn-primary"
+        href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg"
+        style="font-size: 15px; padding: 13px 30px"
+      >
+        Displave をダウンロード
+      </a>
+      <p class="cta-meta">
+        v0.1.0 &nbsp;·&nbsp; macOS &nbsp;·&nbsp; Apple Silicon
+      </p>
+    </section>
 
-  <footer>
-    <p>© JIROMO · Displave</p>
-    <nav class="footer-links">
-      <a href="https://github.com/JIROMO/Displave">GitHub</a>
-      <a href="#usage">使い方</a>
-      <a href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg">ダウンロード</a>
-      <a href="https://displave.com/en.html">English</a>
-    </nav>
-  </footer>
-
-</body>
+    <footer>
+      <p>© JIROMO · Displave</p>
+      <nav class="footer-links">
+        <a href="https://github.com/JIROMO/Displave">GitHub</a>
+        <a href="#usage">使い方</a>
+        <a
+          href="https://github.com/JIROMO/Displave/releases/download/v0.1.0/Displave-0.1.0-arm64.dmg"
+          >ダウンロード</a
+        >
+        <a href="https://displave.com/en.html">English</a>
+      </nav>
+    </footer>
+  </body>
 </html>
