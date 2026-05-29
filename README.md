@@ -4,7 +4,7 @@
 
 Displave is a macOS menu bar app that saves and applies window layouts instantly. Switch between work modes without rearranging windows every time.
 
-[日本語](https://your-site.com) · [English](https://your-site.com/en.html) · [Download](#download)
+[日本語](https://displave.com) · [English](https://displave.com/en.html) · [Download](#download)
 
 ---
 
